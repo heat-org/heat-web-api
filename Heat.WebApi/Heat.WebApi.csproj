@@ -6,5 +6,13 @@
     <UserSecretsId>5d3ce045-6de9-4f6e-8283-c3dad8314e46</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Heat.Application\Heat.Application.csproj" />
+  </ItemGroup>
+
 
 </Project>
