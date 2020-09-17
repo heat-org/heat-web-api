@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  heat.webapi:
+    image: ${DOCKER_REGISTRY-}heat
+    build:
+      context: .
+      dockerfile: Heat.WebApi/Dockerfile
