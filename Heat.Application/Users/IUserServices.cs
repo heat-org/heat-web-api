@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace Heat.Application.Users
 {
     public interface IUserService
     {
-        User Login(User viewModel);
-        User Register(User viewModel);
+        UsuarioVm Login(UsuarioVm viewModel);
+        Task<UsuarioVm> RegisterAsync(UsuarioVm viewModel);
     }
 }

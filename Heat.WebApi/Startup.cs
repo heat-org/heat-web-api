@@ -13,6 +13,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Heat.Persistance.Context;
+using Microsoft.EntityFrameworkCore;
+using Heat.Application.Users;
+using Heat.Application.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Heat.WebApi
 {
@@ -28,6 +34,9 @@ namespace Heat.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<HeatContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IHeatContext, HeatContext>();
+            services.AddTransient<IUserService, UserService>();
             services.AddControllers();
               // JWT authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -49,6 +58,12 @@ namespace Heat.WebApi
                 };
             });
 
+            services.AddMvc(o => {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser().Build();
+                o.Filters.Add(new AuthorizeFilter(policy));
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +77,8 @@ namespace Heat.WebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
             
