@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Heat.Application;
 using Heat.Application.Users;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Heat.WebApi.Controllers
 {
@@ -19,15 +18,15 @@ namespace Heat.WebApi.Controllers
     public class AuthController : Controller
     {
         private IConfiguration _config;
-        private IUserService _service;
+        private IUserService _services;
 
         public AuthController(IConfiguration config, IUserService service)
         {
-            _config = config; _service = service;
+            _config = config; _services = service;
         }
 
         [HttpPost, AllowAnonymous]
-        public IActionResult Authenticate(User user)
+        public IActionResult Authenticate([FromBody]UsuarioVm a)
         {
 
             IActionResult response = BadRequest(ModelState);
@@ -36,21 +35,21 @@ namespace Heat.WebApi.Controllers
 
             if (ModelState.IsValid)
             {
-				//var user = (UserLoginViewModel)_service.Login(login).ResultObject;
-				if (user != null)
-				{
-					response = Ok(new { token = CreateToken(user) });
-				}
+                var user = _services.Login(a);
+                if (user != null)
+                {
+                    response = Ok(new { token = CreateToken(user) });
+                }
             }
 
             return response;
         }
 
-        private string CreateToken(User user)
+        private string CreateToken(UsuarioVm user)
         {
             var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Email,user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub,user.FirstName),
+                new Claim(JwtRegisteredClaimNames.Email,user.CorreoElectronico),
+                new Claim(JwtRegisteredClaimNames.Sub,user.Nombre),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 // new Claim(JwtRegisteredClaimNames.Email, user.User.Email),
                 // new Claim(JwtRegisteredClaimNames.Sub, user.Student.FullName),
