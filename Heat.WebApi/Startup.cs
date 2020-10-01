@@ -57,6 +57,8 @@ namespace Heat.WebApi
                     SaveSigninToken = true
                 };
             });
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen();
 
             services.AddMvc(o => {
                 var policy = new AuthorizationPolicyBuilder()
@@ -73,6 +75,15 @@ namespace Heat.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "HEAT API V1");
+            });
 
             app.UseHttpsRedirection();
 
