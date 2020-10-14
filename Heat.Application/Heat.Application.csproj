@@ -7,6 +7,7 @@
   <ItemGroup>
     <Folder Include="Use Cases\" />
     <Folder Include="Common\" />
+    <Folder Include="Vehicles\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
@@ -14,5 +15,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
   </ItemGroup>
 </Project>

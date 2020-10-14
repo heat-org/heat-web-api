@@ -24,7 +24,7 @@ namespace Heat.WebApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<OkObjectResult> PostAsync([FromBody] UsuarioVm usuario)
+        public async Task<IActionResult> PostAsync([FromBody] UsuarioVm usuario)
         {
             return Ok(await _services.RegisterAsync(usuario));
         }
