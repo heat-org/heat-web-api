@@ -19,6 +19,9 @@ using Heat.Application.Users;
 using Heat.Application.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AutoMapper;
+using Heat.Application.Common;
+using Heat.Application.Vehicles;
 
 namespace Heat.WebApi
 {
@@ -34,9 +37,19 @@ namespace Heat.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddDbContext<HeatContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IHeatContext, HeatContext>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IVehicleServices,VehicleServices>();
             services.AddControllers();
               // JWT authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -65,6 +78,10 @@ namespace Heat.WebApi
                     .RequireAuthenticatedUser().Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
             });
+
+          services.AddMvc().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+             );
 
         }
 
