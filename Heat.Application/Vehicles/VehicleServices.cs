@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Heat.Application.Entities;
+using Heat.Persistance.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Heat.Application.Vehicles

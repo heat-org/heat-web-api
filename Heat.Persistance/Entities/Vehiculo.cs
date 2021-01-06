@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
     public partial class Vehiculo
     {
@@ -24,6 +24,7 @@ namespace Heat.Application.Entities
         public DateTime? DateCreated { get; set; }
         public string UserCreated { get; set; }
         public DateTime? DateModify { get; set; }
+        public int? TiempoEstimadoSegundos { get; set; }
 
         public virtual Conductor ConductorActual { get; set; }
         public virtual Estatus EstatusNavigation { get; set; }

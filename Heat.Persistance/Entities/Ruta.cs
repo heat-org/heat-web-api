@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
     public partial class Ruta
     {
@@ -19,6 +19,8 @@ namespace Heat.Application.Entities
         public DateTime? DateCreated { get; set; }
         public string UserCreated { get; set; }
         public DateTime? DateModify { get; set; }
+        public string Color { get; set; }
+        public string Code { get; set; }
 
         public virtual Estatus Estatus { get; set; }
         public virtual ICollection<EstacionRuta> EstacionRuta { get; set; }

@@ -11,22 +11,28 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Heat.Application;
 using Heat.Application.Users;
+using Heat.WebApi.Helper;
+using Microsoft.Extensions.Options;
 
 namespace Heat.WebApi.Controllers
 {
-    [Route("api/authenticate")]
     public class AuthController : Controller
     {
-        private IConfiguration _config;
-        private IUserService _services;
+        private readonly IConfiguration _config;
+        private readonly IUserService _services;
+        private readonly AppSettings _appSettings;
 
-        public AuthController(IConfiguration config, IUserService service)
+        public AuthController(IConfiguration config, IUserService service, IOptions<AppSettings> appSettings)
         {
-            _config = config; _services = service;
+            _config = config;
+            _services = service;
+            _appSettings = appSettings.Value;
         }
 
-        [HttpPost, AllowAnonymous]
-        public IActionResult Authenticate([FromBody]UsuarioVm a)
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("api/authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] UsuarioVm a)
         {
 
             IActionResult response = BadRequest(ModelState);
@@ -35,30 +41,37 @@ namespace Heat.WebApi.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = _services.Login(a);
+                var user = await _services.Login(a);
                 if (user != null)
                 {
-                    response = Ok(new { token = CreateToken(user) });
+                    var dto = new TokenDTO();
+                    dto.Token = GenerateJwtToken(user);
+                    dto.FullName = $"{user.Nombre} {user.Apellido}";
+                    dto.Sex = user.Sexo;
+                    dto.Phone = user.Telefono;
+                    dto.Email = user.CorreoElectronico;
+
+                    response = Ok(dto);
                 }
             }
 
             return response;
         }
-
-        private string CreateToken(UsuarioVm user)
+        private string GenerateJwtToken(UsuarioVm userInfo)
         {
-            var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Email,user.CorreoElectronico),
-                new Claim(JwtRegisteredClaimNames.Sub,user.Nombre),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                // new Claim(JwtRegisteredClaimNames.Email, user.User.Email),
-                // new Claim(JwtRegisteredClaimNames.Sub, user.Student.FullName),
-                // new Claim(JwtRegisteredClaimNames..Jti, Guid.NewGuid().ToString())
-            };
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SecretKey"]));
-            var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(_config["JWT:Issuer"], _config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(45), signingCredentials: credentials);
+            var claims = new[] {
+        new Claim(JwtRegisteredClaimNames.Sub, userInfo.CorreoElectronico),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                _config["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddYears(2),
+                signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

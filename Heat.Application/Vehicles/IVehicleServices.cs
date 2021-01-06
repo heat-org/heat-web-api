@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Heat.Application.Entities;
+using Heat.Persistance.Entities;
 
 namespace Heat.Application.Vehicles
 {
@@ -10,6 +10,5 @@ namespace Heat.Application.Vehicles
         Task<VehiclesLogVM> SaveLocationAsync(VehiclesLogVM viewModel);
         Task<List<VehiclesLogVM>> GetLocationsAsync();
         Task<Vehiculo> GetVehicleInfoAsync(int id);
-
     }
 }

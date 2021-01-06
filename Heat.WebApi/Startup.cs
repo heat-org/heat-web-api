@@ -1,27 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using Heat.Application;
+using Heat.Application.Common;
+using Heat.Application.Users;
+using Heat.Application.Vehicles;
+using Heat.Persistance.Context;
+using Heat.Persistance.Entities;
+using Heat.WebApi.Helper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Heat.Persistance.Context;
-using Microsoft.EntityFrameworkCore;
-using Heat.Application.Users;
-using Heat.Application.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using AutoMapper;
-using Heat.Application.Common;
-using Heat.Application.Vehicles;
 
 namespace Heat.WebApi
 {
@@ -45,43 +40,64 @@ namespace Heat.WebApi
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-
             services.AddDbContext<HeatContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.Configure<AppSettings>(Configuration.GetSection("JWT"));
+
             services.AddTransient<IHeatContext, HeatContext>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IVehicleServices,VehicleServices>();
+            services.AddTransient<IVehicleServices, VehicleServices>();
+            services.AddTransient<IRouteService, RouteService>();
             services.AddControllers();
-              // JWT authentication
+            // JWT authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(o =>
-            {
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = Configuration["JWT:Issuer"],
+                    .AddJwtBearer(o =>
+                    {
+                        o.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = Configuration["JWT:Issuer"],
 
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:Issuer"],
+                            ValidateAudience = true,
+                            ValidAudience = Configuration["JWT:Issuer"],
 
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"])),
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"])),
 
-                    ValidateLifetime = true,
-                    SaveSigninToken = true
-                };
-            });
+                            ValidateLifetime = true,
+                            SaveSigninToken = true
+                        };
+                    });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddJwtBearer(o =>
+            //{
+            //    o.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidIssuer = Configuration["JWT:Issuer"],
+
+            //        ValidateAudience = true,
+            //        ValidAudience = Configuration["JWT:Issuer"],
+
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"])),
+
+            //        ValidateLifetime = true,
+            //        SaveSigninToken = true
+            //    };
+            //});
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
-            services.AddMvc(o => {
+            services.AddMvc(o =>
+            {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser().Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
             });
 
-          services.AddMvc().AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-             );
+            services.AddMvc().AddNewtonsoftJson(options =>
+              options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+               );
 
         }
 
@@ -101,7 +117,7 @@ namespace Heat.WebApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "HEAT API V1");
             });
-
+            //app.UseMiddleware<JwtMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -109,7 +125,7 @@ namespace Heat.WebApi
             app.UseAuthentication();
 
             app.UseAuthorization();
-            
+
 
             app.UseEndpoints(endpoints =>
             {

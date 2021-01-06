@@ -1,23 +1,15 @@
-﻿using System;
+﻿using Heat.Persistance.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using Heat.Application.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Heat.Persistance.Context
 {
     public partial class HeatContext : DbContext, IHeatContext
     {
-        public HeatContext()
-        {
-        }
+        public HeatContext() { }
 
-        public HeatContext(DbContextOptions<HeatContext> options)
-            : base(options)
-        {
-        }
-        
+        public HeatContext(DbContextOptions<HeatContext> options) : base(options) { }
         public virtual DbSet<AtributosVehiculo> AtributosVehiculo { get; set; }
         public virtual DbSet<BitacoraUbicacion> BitacoraUbicacion { get; set; }
         public virtual DbSet<Comentario> Comentario { get; set; }
@@ -34,21 +26,15 @@ namespace Heat.Persistance.Context
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<Vehiculo> Vehiculo { get; set; }
         public virtual DbSet<VehiculoDetalle> VehiculoDetalle { get; set; }
-
+        public virtual DbSet<SP_Buscar_RutasInfo> SP_Buscar_RutasInfo { get; set; }
         //TODO:IMPLEMENTAR AQUI EL LLENADO DE LOS CAMPOS DE AUDITORIA
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            
             int result = await base.SaveChangesAsync(cancellationToken);
 
             return result;
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            
-        }
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AtributosVehiculo>(entity =>
@@ -412,6 +398,14 @@ namespace Heat.Persistance.Context
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Color)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Code)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.UserModify)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -549,6 +543,7 @@ namespace Heat.Persistance.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.EstatusId).HasColumnName("EstatusID");
+                entity.Property(e => e.TiempoEstimadoSegundos).HasColumnName("TiempoEstimadoSegundos");
 
                 entity.Property(e => e.Placa)
                     .HasMaxLength(255)
@@ -631,7 +626,6 @@ namespace Heat.Persistance.Context
 
             OnModelCreatingPartial(modelBuilder);
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

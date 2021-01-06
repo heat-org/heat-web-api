@@ -4,7 +4,8 @@ namespace Heat.Application.Users
 {
     public interface IUserService
     {
-        UsuarioVm Login(UsuarioVm viewModel);
+        Task<UsuarioVm> Login(UsuarioVm viewModel);
         Task<UsuarioVm> RegisterAsync(UsuarioVm viewModel);
+        Task<UsuarioVm> GetByUserName(string username);
     }
 }

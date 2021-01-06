@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
     public partial class Estatus
     {

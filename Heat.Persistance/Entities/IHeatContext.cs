@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
     public interface IHeatContext
     {
@@ -23,8 +23,6 @@ namespace Heat.Application.Entities
         DbSet<Usuario> Usuario { get; set; }
         DbSet<Vehiculo> Vehiculo { get; set; }
         DbSet<VehiculoDetalle> VehiculoDetalle { get; set; }
-
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-
     }
 }

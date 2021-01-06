@@ -1,15 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
-    public partial class Parada
+    public partial class EstacionRuta
     {
         public int Id { get; set; }
-        public string Codigo { get; set; }
-        public int? Orden { get; set; }
-        public string Tramo { get; set; }
-        public string Descripcion { get; set; }
-        public string Ubicacion { get; set; }
+        public int? EstacionId { get; set; }
         public int? RutaId { get; set; }
         public int? EstatusId { get; set; }
         public string UserModify { get; set; }

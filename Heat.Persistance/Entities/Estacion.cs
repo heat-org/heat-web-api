@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
-    public partial class AtributosVehiculo
+    public partial class Estacion
     {
-        public AtributosVehiculo()
-        {
-            VehiculoDetalle = new HashSet<VehiculoDetalle>();
-        }
-
         public int Id { get; set; }
         public string Descripcion { get; set; }
         public int? EstatusId { get; set; }
@@ -19,6 +14,5 @@ namespace Heat.Application.Entities
         public DateTime? DateModify { get; set; }
 
         public virtual Estatus Estatus { get; set; }
-        public virtual ICollection<VehiculoDetalle> VehiculoDetalle { get; set; }
     }
 }

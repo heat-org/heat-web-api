@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Heat.Application.Entities
+namespace Heat.Persistance.Entities
 {
-    public partial class Comentario
+    public partial class TipoReporte
     {
-        public Comentario()
+        public TipoReporte()
         {
             Reporte = new HashSet<Reporte>();
         }
 
         public int Id { get; set; }
-        public string Texto { get; set; }
-        public int? UsuarioId { get; set; }
-        public int? IndReportado { get; set; }
+        public string Descripcion { get; set; }
         public int? EstatusId { get; set; }
         public string UserModify { get; set; }
         public DateTime? DateCreated { get; set; }
@@ -21,7 +19,6 @@ namespace Heat.Application.Entities
         public DateTime? DateModify { get; set; }
 
         public virtual Estatus Estatus { get; set; }
-        public virtual Usuario Usuario { get; set; }
         public virtual ICollection<Reporte> Reporte { get; set; }
     }
 }
