@@ -46,6 +46,18 @@ namespace Heat.Application.Common
                 return _Ruta;
             }
         }
+        private IRepository<Parada> _Parada;
+        public IRepository<Parada> Parada
+        {
+            get
+            {
+                if (_Parada == null)
+                {
+                    _Parada = new Repository<Parada>(context);
+                }
+                return _Parada;
+            }
+        }
         #endregion
     }
 }

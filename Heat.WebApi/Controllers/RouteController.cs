@@ -24,15 +24,16 @@ namespace Heat.WebApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var routes = await _services.GetAll();
-            return Ok(new DataResponse<IEnumerable<RutaDTO>>(routes));
+            return Ok(new DataResponse<IEnumerable<RutaDTO>>(routes, true));
         }
+
         [Authorize]
         [HttpGet]
         [Route("GetAllInfo")]
         public async Task<IActionResult> GetAllInfo()
         {
             var routes = await _services.GetAllInfo();
-            return Ok(new DataResponse<IEnumerable<RutaDTO>>(routes));
+            return Ok(new DataResponse<IEnumerable<RutaDTO>>(routes, true));
         }
     }
 }

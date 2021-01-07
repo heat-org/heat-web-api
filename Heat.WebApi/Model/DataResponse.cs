@@ -11,7 +11,7 @@ namespace Heat
         public T Data { get; set; }
         public string Message { get; set; }
 
-        public DataResponse(T content, bool success = true, string message = "")
+        public DataResponse(T content, bool success = false, string message = "")
         {
             Data = content;
             Success = success;
