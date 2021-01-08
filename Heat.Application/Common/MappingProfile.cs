@@ -11,6 +11,13 @@ namespace Heat.Application.Common
         {
             CreateMap<BitacoraUbicacion, VehiclesLogVM>();
             CreateMap<VehiclesLogVM, BitacoraUbicacion>();
+            CreateMap<VehicleDTO, VehicleInfoDTO>();
+            CreateMap<Vehiculo, VehicleDTO>().ForMember(dest => dest.Description,
+                                                        opt => opt.MapFrom(src => src.Descripcion))
+                                             .ForMember(dest => dest.Location,
+                                                        opt => opt.MapFrom(src => src.Ubicacion))
+                                             .ForMember(dest => dest.RouteID,
+                                                        opt => opt.MapFrom(src => src.RutaId));
             CreateMap<Ruta, RutaDTO>().ForMember(dest => dest.Description,
                                                  opt => opt.MapFrom(src => src.Descripcion))
                                       .ForMember(dest => dest.ID,

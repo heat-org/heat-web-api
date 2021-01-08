@@ -3,50 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Heat.Application.Common;
+using Heat.Persistance.Context;
 using Heat.Persistance.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Heat.Application.Vehicles
 {
-    public class VehicleServices : IVehicleServices
+    public class VehicleServices : BaseService, IVehicleServices
     {
-        private IHeatContext context;
-        private readonly IMapper _mapper;
-
-        public VehicleServices(IHeatContext context, IMapper mapper)
-        {
-            this.context = context;
-            _mapper = mapper;
-
-        }
+        #region Constructor
+        public VehicleServices(HeatContext context, IMapper mapper) : base(context, mapper) { }
+        #endregion
 
         public async Task<VehiclesLogVM> SaveLocationAsync(VehiclesLogVM viewModel)
         {
-            var bitacora = new BitacoraUbicacion();
-            bitacora.VehiculoId = viewModel.VehiculoId;
-            bitacora.Ubicacion = viewModel.Ubicacion;
-            context.BitacoraUbicacion.Add(bitacora);
-            await context.SaveChangesAsync();
+            string query = "dbo.SP_Save_Bitacora @VehiculoID,@Ubicacion";
+            await _unit.Parada.ExecuteProcedure(query, new SqlParameter("VehiculoID", viewModel.VehiculoId),
+                                                       new SqlParameter("Ubicacion", viewModel.Ubicacion ?? string.Empty));
             return viewModel;
         }
-
-        public async Task<List<VehiclesLogVM>> GetLocationsAsync()
+        public async Task<VehicleDTO> GetVehicleInfoAsync(int id)
         {
-            
-            return _mapper.Map<List<VehiclesLogVM>>(await context.BitacoraUbicacion.ToListAsync());
-
-             
+            return (await _unit.Vehiculo.Get(filter: p => p.Id == id))
+                               .Select(a => _mapper.Map<VehicleDTO>(a))
+                               .FirstOrDefault();
         }
-
-        public async Task<Vehiculo> GetVehicleInfoAsync(int id)
+        public async Task<IEnumerable<VehicleDTO>> GetAllActives()
         {
-            return await context.Vehiculo.Include(x => x.BitacoraUbicacion)
-                .Include(x => x.ConductorActual)
-                .Include(x => x.Ruta)
-                .Include(x => x.TipoVehiculo)
-                .Include(x => x.VehiculoDetalle)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return (await _unit.Vehiculo.Get()).Select(a => _mapper.Map<VehicleDTO>(a));
         }
-
     }
 }

@@ -36,26 +36,18 @@ namespace Heat.WebApi.Controllers
         [HttpPost]
         public IActionResult SendRequest([FromBody] VehiclesLogVM vehicle)
         {
-            //_services.SaveLocationAsync(vehicle);
-            var dto = new VehicleDTO
-            {
-                ID = vehicle.VehiculoId.GetValueOrDefault(0),
-                Location = vehicle.Ubicacion
-            };
+            _services.SaveLocationAsync(vehicle);
             _hubContext.Clients.All.SendAsync("SetVehiclePosition", vehicle.VehiculoId.ToString(), vehicle.Ubicacion);
             return Ok();
         }
 
+        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        [Route("GetAllActives")]
+        public async Task<IActionResult> GetAllActives()
         {
-            return Ok(await _services.GetLocationsAsync());
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
-        {
-            return Ok(await _services.GetVehicleInfoAsync(id));
+            var routes = await _services.GetAllActives();
+            return Ok(new DataResponse<IEnumerable<VehicleDTO>>(routes, true));
         }
     }
 }

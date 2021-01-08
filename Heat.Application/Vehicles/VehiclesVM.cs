@@ -18,7 +18,7 @@ namespace Heat.Application.Vehicles
 
     public class VehiclesLogVM
     {
-        public int? VehiculoId { get; set; }
+        public int VehiculoId { get; set; }
         public string Ubicacion { get; set; }
         public DateTime? FechaHora { get; set; } = DateTime.Now;
 

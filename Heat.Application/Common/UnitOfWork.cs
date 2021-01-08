@@ -2,9 +2,6 @@
 using Heat.Persistance.Common;
 using Heat.Persistance.Context;
 using Heat.Persistance.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Heat.Application.Common
 {
@@ -56,6 +53,30 @@ namespace Heat.Application.Common
                     _Parada = new Repository<Parada>(context);
                 }
                 return _Parada;
+            }
+        }
+        private IRepository<Vehiculo> _Vehiculo;
+        public IRepository<Vehiculo> Vehiculo
+        {
+            get
+            {
+                if (_Vehiculo == null)
+                {
+                    _Vehiculo = new Repository<Vehiculo>(context);
+                }
+                return _Vehiculo;
+            }
+        }
+        private IRepository<BitacoraUbicacion> _BitacoraUbicacion;
+        public IRepository<BitacoraUbicacion> BitacoraUbicacion
+        {
+            get
+            {
+                if (_BitacoraUbicacion == null)
+                {
+                    _BitacoraUbicacion = new Repository<BitacoraUbicacion>(context);
+                }
+                return _BitacoraUbicacion;
             }
         }
         #endregion
