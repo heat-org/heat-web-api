@@ -6,6 +6,7 @@ using Heat.Application.Vehicles;
 using Heat.Persistance.Context;
 using Heat.Persistance.Entities;
 using Heat.WebApi.Helper;
+using Heat.WebApi.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Heat.WebApi
 {
@@ -49,11 +51,12 @@ namespace Heat.WebApi
             services.AddTransient<IRouteService, RouteService>();
             services.AddTransient<IStopService, StopService>();
             services.AddControllers();
+            services.AddSignalR();
             // JWT authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(o =>
+                    .AddJwtBearer(options =>
                     {
-                        o.TokenValidationParameters = new TokenValidationParameters
+                        options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = true,
                             ValidIssuer = Configuration["JWT:Issuer"],
@@ -66,6 +69,23 @@ namespace Heat.WebApi
 
                             ValidateLifetime = true,
                             SaveSigninToken = true
+                        };
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+
+                                // If the request is for our hub...
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) &&
+                                    (path.StartsWithSegments("/api/Vehicles")))
+                                {
+                                    // Read the token out of the query string
+                                    context.Token = accessToken;
+                                }
+                                return Task.CompletedTask;
+                            }
                         };
                     });
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -96,9 +116,8 @@ namespace Heat.WebApi
                 o.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            services.AddMvc().AddNewtonsoftJson(options =>
-              options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-               );
+            services.AddMvc().AddNewtonsoftJson(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
         }
 
@@ -130,6 +149,7 @@ namespace Heat.WebApi
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<TrackerHub>("/tracker");
                 endpoints.MapControllers();
             });
         }

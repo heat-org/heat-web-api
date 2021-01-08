@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Use Cases\" />
-    <Folder Include="Vehicles\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
