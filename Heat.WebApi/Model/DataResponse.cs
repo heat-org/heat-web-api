@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Heat
 {
-    public class DataResponse<T> where T : class
+    public class DataResponse<T>
     {
         public bool Success { get; set; }
         public T Data { get; set; }

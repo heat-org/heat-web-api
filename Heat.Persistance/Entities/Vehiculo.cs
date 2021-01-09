@@ -32,5 +32,6 @@ namespace Heat.Persistance.Entities
         public virtual TipoVehiculo TipoVehiculo { get; set; }
         public virtual ICollection<BitacoraUbicacion> BitacoraUbicacion { get; set; }
         public virtual ICollection<VehiculoDetalle> VehiculoDetalle { get; set; }
+        public virtual ICollection<Comentario> Comentario { get; set; }
     }
 }

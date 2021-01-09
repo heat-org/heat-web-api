@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Heat.Application;
 using Heat.Application.Vehicles;
 using Heat.WebApi.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Heat.WebApi.Controllers
 {
@@ -25,18 +24,13 @@ namespace Heat.WebApi.Controllers
         }
 
         // POST api/values
-        [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] VehiclesLogVM vehicles)
-        {
-            return Ok(await _services.SaveLocationAsync(vehicles));
-        }
 
         [AllowAnonymous]
         [Route("setTrack")]
         [HttpPost]
         public IActionResult SendRequest([FromBody] VehiclesLogVM vehicle)
         {
-            _services.SaveLocationAsync(vehicle);
+            _services.SaveLocation(vehicle);
             _hubContext.Clients.All.SendAsync("SetVehiclePosition", vehicle.VehiculoId.ToString(), vehicle.Ubicacion);
             return Ok();
         }
@@ -46,8 +40,17 @@ namespace Heat.WebApi.Controllers
         [Route("GetAllActives")]
         public async Task<IActionResult> GetAllActives()
         {
-            var routes = await _services.GetAllActives();
-            return Ok(new DataResponse<IEnumerable<VehicleDTO>>(routes, true));
+            var vehicles = await _services.GetAllActives();
+            return Ok(new DataResponse<IEnumerable<VehicleDTO>>(vehicles, true));
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("GetVehicleInfo")]
+        public async Task<IActionResult> GetVehicleInfo(int id)
+        {
+            var vehicles = await _services.GetVehicleInfoAsync(id);
+            return Ok(new DataResponse<VehicleInfoDTO>(vehicles, true));
         }
     }
 }

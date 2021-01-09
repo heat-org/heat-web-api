@@ -26,7 +26,7 @@ namespace Heat.Persistance.Common
         #endregion
 
         #region Methods
-        public async Task<bool> ExecuteProcedure(string name, params object[] parameters)
+        public async Task<bool> ExecuteProcedureAsync(string name, params object[] parameters)
             => await this.context.Database.ExecuteSqlRawAsync(name, parameters) > 0;
         public async Task<IEnumerable<TEntity>> Get()
         {
@@ -106,6 +106,10 @@ namespace Heat.Persistance.Common
         {
             await context.SaveChangesAsync();
         }
-        #endregion    
+
+        public bool ExecuteProcedure(string name, params object[] parameters)
+            => this.context.Database.ExecuteSqlRaw(name, parameters) > 0;
+
+        #endregion
     }
 }

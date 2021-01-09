@@ -15,6 +15,7 @@ namespace Heat.Persistance.Entities
         public int? UsuarioId { get; set; }
         public int? IndReportado { get; set; }
         public int? EstatusId { get; set; }
+        public int VehiculoId { get; set; }
         public string UserModify { get; set; }
         public DateTime? DateCreated { get; set; }
         public string UserCreated { get; set; }
@@ -22,6 +23,7 @@ namespace Heat.Persistance.Entities
 
         public virtual Estatus Estatus { get; set; }
         public virtual Usuario Usuario { get; set; }
+        public virtual Vehiculo Vehiculo { get; set; }
         public virtual ICollection<Reporte> Reporte { get; set; }
     }
 }

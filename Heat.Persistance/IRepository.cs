@@ -9,7 +9,8 @@ namespace Heat.Persistance
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<bool> ExecuteProcedure(string name, params object[] parameters);
+        Task<bool> ExecuteProcedureAsync(string name, params object[] parameters);
+        bool ExecuteProcedure(string name, params object[] parameters);
         Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null,
                                        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                        string includeProperties = "");

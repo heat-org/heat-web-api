@@ -8,7 +8,6 @@ namespace Heat.Persistance.Context
     public partial class HeatContext : DbContext, IHeatContext
     {
         public HeatContext() { }
-
         public HeatContext(DbContextOptions<HeatContext> options) : base(options) { }
         public virtual DbSet<AtributosVehiculo> AtributosVehiculo { get; set; }
         public virtual DbSet<BitacoraUbicacion> BitacoraUbicacion { get; set; }
@@ -111,6 +110,11 @@ namespace Heat.Persistance.Context
                     .WithMany(p => p.Comentario)
                     .HasForeignKey(d => d.EstatusId)
                     .HasConstraintName("FK__Comentari__Estat__06CD04F7");
+
+                entity.HasOne(d => d.Vehiculo)
+                    .WithMany(p => p.Comentario)
+                    .HasForeignKey(d => d.VehiculoId)
+                    .HasConstraintName("FK_Comentario_Vehiculo");
 
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.Comentario)

@@ -24,6 +24,8 @@ namespace Heat.Persistance.Entities
         public DateTime? DateCreated { get; set; }
         public string UserCreated { get; set; }
         public DateTime? DateModify { get; set; }
+        public DateTime? FechaIngreso { get; set; }
+        public decimal Rating { get; set; }
 
         public virtual Estatus Estatus { get; set; }
         public virtual Horario Horario { get; set; }

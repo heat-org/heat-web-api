@@ -50,6 +50,7 @@ namespace Heat.WebApi
             services.AddTransient<IVehicleServices, VehicleServices>();
             services.AddTransient<IRouteService, RouteService>();
             services.AddTransient<IStopService, StopService>();
+            services.AddTransient<IReviewService, ReviewService>();
             services.AddControllers();
             services.AddSignalR();
             // JWT authentication

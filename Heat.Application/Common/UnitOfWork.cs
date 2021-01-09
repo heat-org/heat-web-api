@@ -79,6 +79,54 @@ namespace Heat.Application.Common
                 return _BitacoraUbicacion;
             }
         }
+        private IRepository<Comentario> _Comentario;
+        public IRepository<Comentario> Comentario
+        {
+            get
+            {
+                if (_Comentario == null)
+                {
+                    _Comentario = new Repository<Comentario>(context);
+                }
+                return _Comentario;
+            }
+        }
+        private IRepository<VehiculoDetalle> _VehiculoDetalle;
+        public IRepository<VehiculoDetalle> VehiculoDetalle
+        {
+            get
+            {
+                if (_VehiculoDetalle == null)
+                {
+                    _VehiculoDetalle = new Repository<VehiculoDetalle>(context);
+                }
+                return _VehiculoDetalle;
+            }
+        }
+        private IRepository<Reporte> _Reporte;
+        public IRepository<Reporte> Reporte
+        {
+            get
+            {
+                if (_Reporte == null)
+                {
+                    _Reporte = new Repository<Reporte>(context);
+                }
+                return _Reporte;
+            }
+        }
+        private IRepository<TipoReporte> _TipoReporte;
+        public IRepository<TipoReporte> TipoReporte
+        {
+            get
+            {
+                if (_TipoReporte == null)
+                {
+                    _TipoReporte = new Repository<TipoReporte>(context);
+                }
+                return _TipoReporte;
+            }
+        }
         #endregion
     }
 }
